@@ -1,0 +1,73 @@
+version: '3.2'
+services:
+  nextcloud:
+    image: nextcloud
+    container_name: nextcloud
+    restart: always
+    networks:
+      - net
+      - common
+    ports:
+      - 8080:80
+    volumes:
+      - nextcloud:/var/www/html
+      - db:/var/lib/postgresql/data/
+    depends_on:
+      - nextcloud_db
+      - redis
+    environment:
+      - POSTGRES_HOST=nextcloud_db
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - NEXTCLOUD_ADMIN_USER
+      - NEXTCLOUD_ADMIN_PASSWORD
+      - LETSENCRYPT_HOST
+      - VIRTUAL_HOST
+      - NEXTCLOUD_HOSTNAME
+      - NEXTCLOUD_TRUSTED_DOMAINS
+
+    hostname: kromnow.diveinai.com
+
+  nextcloud_db:
+    image: postgres
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    networks: 
+      - common
+
+  redis:
+    image: redis
+    container_name: nextcloud_redis
+    networks:
+      - net
+
+  cron:
+    image: nextcloud
+    container_name: nextcloud_cron
+    restart: always
+    networks:
+      - net
+      - common
+    volumes:
+      - nextcloud:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - nextcloud_db
+      - redis
+
+volumes:
+  nextcloud:
+  db:
+
+networks:
+  net:
+    external: true
+  common:
+    internal: true
+  
