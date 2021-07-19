@@ -1,0 +1,3 @@
+[submodule "nginxDockerProxy"]
+	path = nginxDockerProxy
+	url = git@github.com:mka142/nginxDockerProxy.git
