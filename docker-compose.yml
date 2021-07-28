@@ -49,6 +49,7 @@ services:
   redis:
     image: redis
     container_name: nextcloud_redis
+    restart: always
     networks:
       - common
     environment:
