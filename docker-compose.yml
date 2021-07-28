@@ -19,6 +19,7 @@ services:
       - nextcloud_db
       - redis
     environment:
+      - REDIS_HOST=redis
       - POSTGRES_HOST=nextcloud_db
       - POSTGRES_USER
       - POSTGRES_PASSWORD
@@ -49,7 +50,9 @@ services:
     image: redis
     container_name: nextcloud_redis
     networks:
-      - net
+      - common
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
 
   cron:
     image: nextcloud
@@ -64,6 +67,20 @@ services:
     depends_on:
       - nextcloud_db
       - redis
+      
+  coturn:
+    image: woahbase/alpine-coturn
+    container_name: coturn
+    volumes:
+      - "./coturn/turnserver.conf:/var/lib/coturn/turnserver.conf"
+    expose:
+      - "3478"
+      - "3479"
+      - "5349"
+      - "5350"
+    ports:
+      - "3478:3478"
+    restart: always
 
 volumes:
   nextcloud:
