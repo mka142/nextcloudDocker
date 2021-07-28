@@ -35,6 +35,17 @@ Set environmnet varibles to you're individual parameters. Then build:
 - POSTGRES_PASSWORD
 - POSTGRES_DB
 
+### Mobile App can't authenticate
+- Install *nano* in nextcloud container
+    ```
+    docker exec -it [container name or ID] bash -c 'apt-get -y update && apt -y install nano'
+    ```
+
+- add this two lines at the end of your *config.php* file in *nextcloud* container
+    ```
+    'forcessl' => true,
+    'overwriteprotocol' => 'https',
+    ```
 
 ### Help Links
 
